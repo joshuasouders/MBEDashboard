@@ -1,0 +1,15 @@
+body{
+	margin:0px;
+}
+#map{ 
+	height: 100%;
+	width:75%;
+	float:right;
+}
+#panel{
+	width:25%;
+	height:100%;
+	float:left;
+	position:absolute;
+	background-color:#1439a2;
+}
