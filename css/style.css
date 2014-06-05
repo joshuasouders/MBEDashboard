@@ -9,7 +9,28 @@ body{
 #panel{
 	width:25%;
 	height:100%;
+	padding:15px;
 	float:left;
 	position:absolute;
+	background-color:#cccccc;
+}
+.panel-default{
 	background-color:#1439a2;
+}
+.header{
+	text-align:center;
+}
+h4{
+	color:#ffffff;
+	margin-bottom:25px;
+}
+.dropdown-toggle{
+	width:100%;
+	background-color:#ffffff;
+}
+.dropdown{
+	margin-bottom:10px;
+}
+.dropdown-menu{
+	width:100%;
 }
