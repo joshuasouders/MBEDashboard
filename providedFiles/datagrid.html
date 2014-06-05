@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  <!-- Grid baseball sample -->
+	<head>
+		<meta charset="utf-8">
+		<title>Demo: dojox/grid/DataGrid Simple Structure</title>
+		<link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dojo/resources/dojo.css" />
+		<link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css" />
+		<link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dojox/grid/resources/Grid.css" />
+		<link rel="stylesheet" href="/http://js.arcgis.com/3.9/js/dojo/dojox/grid/resources/claroGrid.css" />
+		<link rel="stylesheet" href="style.css" media="screen">
+		<link rel="stylesheet" href="demo.css" media="screen">
+
+	</head>
+	<body class="claro">
+		<h1>MDOT MBE Finder</h1>
+		
+		
+		<br/>
+		<div id="grid"></div>
+		<!-- load dojo and provide config via data attribute -->
+		<script src="http://js.arcgis.com/3.9/js/dojo/dojo/dojo.js" data-dojo-config="isDebug: true, async: true"></script>
+		<script>
+
+
+			require(["dojox/grid/DataGrid",
+					"dojo/store/Memory",
+					//"dijit/form/ComboBox",
+					//"dijit/form/FilteringSelect",  
+					//"dojo/data/ItemFileReadStore",
+					"dojo/data/ObjectStore",
+					"dojo/request",
+					"dojox/math/round",
+					"dojo/domReady!"
+			], function(DataGrid, 
+						Memory, 
+						//ComboBox, 
+						//FilteringSelect, 
+						//ItemFileReadStore, 
+						ObjectStore, 
+						request 
+						
+						) {
+				var grid, dataStore;
+
+				request.get("MDOT-MBE.json", {
+					handleAs: "json"
+				}).then(function(data){
+						dataStore =  new ObjectStore({ objectStore:new Memory({ data: data.items }) });
+					
+						
+						
+						grid = new DataGrid({
+						store: dataStore,
+						query: { id: "*" },
+						structure: [
+							{
+								name: "Industry", fields: ["SHORT_CODE", "SHORT_DESC"], width: "30%",
+								formatter: function(fields, rowIndex, cell){
+									var ind_code = fields[0],
+										ind_desc = fields[1];
+
+									return ind_code + " - " + ind_desc;
+								}
+							},
+							{
+								name: "Specialty", fields: ["NAICS_CODE", "NAICS_DESC"], width: "30%",
+								formatter: function(fields, rowIndex, cell){
+									var spec_code = fields[0],
+										spec_desc = fields[1];
+
+									return spec_code + " - " + spec_desc;
+								}
+							},
+							{ name: "Details", field: "DETAILS", width: "50%" },
+							{ name: "County", field: "COUNTY", width: "10%" },
+							{ name: "Name", field: "NAME", width: "20%" }       //,
+							
+							
+							
+						]
+					}, "grid");
+
+					grid.startup();
+				});
+			});
+		</script>
+		
+		
+		
+		
+		
+		
+	</body>
+</html>
