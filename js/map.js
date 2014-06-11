@@ -6,3 +6,7 @@ function Map(){
 	    maxZoom: 18
 	}).addTo(map);
 }
+
+Map.prototype.setData = function(data){
+	console.log("map.setData called");
+}

@@ -1,7 +1,6 @@
 function Filter(){
-
 }
 
-Filter.prototype.addParameter = function(){}
+Filter.prototype.addParameter = function(parameter){}
 
-Filter.prototype.removeParameter = function(){}
+Filter.prototype.removeParameter = function(parameter){}

@@ -5,10 +5,10 @@ function IndustryFilter(){
 IndustryFilter.prototype = new Filter();
 IndustryFilter.prototype.constructor = IndustryFilter;
 
-IndustryFilter.prototype.addParameter = function(){
+IndustryFilter.prototype.addParameter = function(parameter){
 
 }
 
-IndustryFilter.prototype.removeParameter = function(){
+IndustryFilter.prototype.removeParameter = function(parameter){
 	
 }
