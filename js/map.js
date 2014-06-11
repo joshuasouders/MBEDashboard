@@ -8,5 +8,4 @@ function Map(){
 }
 
 Map.prototype.setData = function(data){
-	console.log("map.setData called");
 }

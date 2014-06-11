@@ -17,5 +17,4 @@ Panel.prototype.populateDropdown = function(){
 			$('#industryDropdown').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">'+obj.SHORT_DESC+' ('+obj.SHORT_CODE+')</a></li>');
 		}
 	}
-	console.log(industryTypes);
 }
