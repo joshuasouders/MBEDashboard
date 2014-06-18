@@ -49,3 +49,8 @@ h5{
 .filterHeader{
 	display:none;
 }
+
+
+.scrollable{
+	overflow:auto;
+}

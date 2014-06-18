@@ -1,4 +1,6 @@
 function Map(){
+	this.data;
+
 	this.map = L.map('map', {maxZoom: 9, minZoom: 7}).setView([38.8, -77.3], 8);
 
 	L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -50,6 +52,8 @@ function Map(){
 }
 
 Map.prototype.setData = function(data, enabledCounties){
+	this.data = data;
+
 	//this will contain the number of entries for the passed data that belong to each county. if there are 5 entries from montgomery county and 0 from every other county,
 	//this will be an array with numEntriesPerCounty[15] = 5 and every other entry equal to 0.
 	var numEntriesPerCounty = new Array();
@@ -67,9 +71,9 @@ Map.prototype.setData = function(data, enabledCounties){
 			}
 		}
 	}
-	for(var i = 0; i < data.items.length; i++){
+	for(var i = 0; i < this.data.items.length; i++){
 		for(var x = 0; x < this.mdcnty.features.length; x++){
-			if(data.items[i].COUNTY == this.mdcnty.features[x].properties.name){
+			if(this.data.items[i].COUNTY == this.mdcnty.features[x].properties.name){
 				if(numEntriesPerCounty[x] >= 0){
 					numEntriesPerCounty[x] = numEntriesPerCounty[x] + 1;
 					break;
@@ -78,19 +82,14 @@ Map.prototype.setData = function(data, enabledCounties){
 		}
 	}
 
-	console.log("numEntriesPerCounty ");
-	console.log(numEntriesPerCounty);
-
 	this.createChoropleth(numEntriesPerCounty);
 }
 
 Map.prototype.createChoropleth = function(numEntriesPerCounty){
 	for(var i = 0; i < this.cntyLeafletObj.length; i++){
+		this.cntyLeafletObj[i].bindPopup(L.popup().setContent('<h3>' + this.mdcnty.features[i].properties.name + ' County</h3>'));
 		this.cntyLeafletObj[i].setStyle(this.outlineStyle);
 	}
-
-
-	console.log(this.cntyLeafletObj);
 
 	//the format for a given enabledCounties entry is and object of the format {countyIndex: (the alphabetic index of the county), value: (the number of entries for this county in the passed in data), hex: (hex value of color of the county)}
 	var enabledCounties = new Array();
@@ -121,7 +120,6 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty){
 	var currentMax = lowest + colorRampStep;
 
 	for(var i = 0; i < colorRamp.length; i++){
-		console.log(currentMin + " and " + currentMax);
 		for(var x = 0; x < enabledCounties.length; x++){
 			if((enabledCounties[x].value >= currentMin) && (enabledCounties[x].value <= currentMax)){
 				enabledCounties[x].hex = colorRamp[i];
@@ -130,8 +128,6 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty){
 		currentMin += colorRampStep;
 		currentMax += colorRampStep;
 	}
-	console.log("counties");
-	console.log(enabledCounties);
 
 	var choroplethStyle = {
 		"color": "#000000",
@@ -143,5 +139,61 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty){
 		choroplethStyle.fillColor = enabledCounties[i].hex;
 
 		this.cntyLeafletObj[enabledCounties[i].countyIndex].setStyle(choroplethStyle);
+	}
+
+	this.createPopups(enabledCounties);
+}
+
+Map.prototype.createPopups = function(enabledCounties){
+	for(var i = 0; i < enabledCounties.length; i++){
+		var count = 1;
+		var popup = L.popup({"minWidth": 700, "maxHeight": 350});
+		var popupString = '<h3>' + this.mdcnty.features[enabledCounties[i].countyIndex].properties.name + ' County</h3>'+
+			'<hr>'+
+			'<p>'+
+			'<div class="panel">'+
+  					'<table class="table scrollable">'+
+   						'<thead>'+
+   							'<tr>'+
+   								'<th>#</th>'+
+   								'<th>Name</th>'+
+   								'<th>Industry</th>'+
+   								'<th>Specialization</th>'+
+   							'</tr>'+
+   						'</thead>'+
+   						'<tbody>';
+
+   		for(var x = 0; x < this.data.items.length; x++){
+   			if(this.data.items[x].COUNTY == this.mdcnty.features[enabledCounties[i].countyIndex].properties.name){
+   				popupString += '<tr><small>'+
+	   								'<td>' + count + '</td>'+
+	   								'<td>' + this.data.items[x].NAME + '</td>'+
+	   								'<td>' + this.data.items[x].SHORT_DESC + '</td>';
+	   								if(this.data.items[x].DETAILS != ""){
+	   									popupString += '<td>' + this.data.items[x].DETAILS + '</td>';
+	   								}
+	   								else{
+	   									popupString += '<td>No Specialization</td>';
+	   								}
+	   							'</small></tr>';
+	   			count++;
+   			}
+   		}
+
+   		popupString += '<tbody>'+
+					'</table>'+
+				'</div>'+
+			'</div>'+
+			'</p>';
+
+		if(count == 1){
+			popupString = '<h3>' + this.mdcnty.features[enabledCounties[i].countyIndex].properties.name + ' County</h3>'+
+			'<hr>'+
+			'<p>No Records</p>';
+		}
+
+		popup.setContent(popupString);
+
+		this.cntyLeafletObj[enabledCounties[i].countyIndex].bindPopup(popup);
 	}
 }
