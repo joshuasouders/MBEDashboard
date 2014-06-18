@@ -1,9 +1,8 @@
 function Map(){
-	this.map = L.map('map').setView([38.8, -77.3], 8);
+	this.map = L.map('map', {maxZoom: 9, minZoom: 7}).setView([38.8, -77.3], 8);
 
 	L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	    attribution: "OpenStreetMap contributors",
-	    maxZoom: 18
 	}).addTo(this.map);
 
 	this.mdcnty = {
@@ -36,14 +35,18 @@ function Map(){
 		]
 	};
 
-	this.countyStyle = {
-		"color": "#1439a2",
-	    "weight": 5,
-	    "fillOpacity": 0.7
-	}
+	this.cntyLeafletObj = new Array();
+
+	this.outlineStyle = {
+		"color": "#000000",
+	    "weight": 3,
+	    "fillOpacity": 0
+	};
 
 	//this will add all county boundaries to the map. we can reference all counties individually by referencing mdcnty.feature[i], where i is in a loop
-	L.geoJson(this.mdcnty, {style: this.countyStyle}).addTo(this.map);
+	for(var i = 0; i < this.mdcnty.features.length; i++){
+		this.cntyLeafletObj.push(L.geoJson(this.mdcnty.features[i], {style: this.outlineStyle}).addTo(this.map));
+	}
 }
 
 Map.prototype.setData = function(data, enabledCounties){
@@ -82,6 +85,13 @@ Map.prototype.setData = function(data, enabledCounties){
 }
 
 Map.prototype.createChoropleth = function(numEntriesPerCounty){
+	for(var i = 0; i < this.cntyLeafletObj.length; i++){
+		this.cntyLeafletObj[i].setStyle(this.outlineStyle);
+	}
+
+
+	console.log(this.cntyLeafletObj);
+
 	//the format for a given enabledCounties entry is and object of the format {countyIndex: (the alphabetic index of the county), value: (the number of entries for this county in the passed in data), hex: (hex value of color of the county)}
 	var enabledCounties = new Array();
 
@@ -91,27 +101,47 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty){
 	for(var i = 0; i < 24; i++){
 		if(numEntriesPerCounty[i] != -1){
 			if(numEntriesPerCounty[i] > highest){
-				numEntriesPerCounty[i] = highest;
+				highest = numEntriesPerCounty[i];
 			}
 			if(numEntriesPerCounty[i] < lowest){
-				numEntriesPerCounty[i] = lowest;
+				lowest = numEntriesPerCounty[i];
 			}
 			enabledCounties.push({countyIndex: i, value: numEntriesPerCounty[i], hex: ""});
 		}
 	}
 
-	var colorRamp = ["#031721", "#0B2F3F", "#1F4C60", "#3B6B82", "#5D8CA3", "#89B0C1", "#B8D1DD", "#F2F7F9"];
+
+
+
+	var colorRamp = ["#C48C6D", "#B86F59", "#A95449", "#973838", "#822933", "#701E31", "#5D122D", "#480A27"	];
 
 	var difference = highest - lowest;
 	var colorRampStep = difference/colorRamp.length;
-	var currentMin = highest - colorRampStep;
-	var currentMax = highest;
+	var currentMin = lowest;
+	var currentMax = lowest + colorRampStep;
 
 	for(var i = 0; i < colorRamp.length; i++){
+		console.log(currentMin + " and " + currentMax);
 		for(var x = 0; x < enabledCounties.length; x++){
 			if((enabledCounties[x].value >= currentMin) && (enabledCounties[x].value <= currentMax)){
 				enabledCounties[x].hex = colorRamp[i];
 			}
 		}
+		currentMin += colorRampStep;
+		currentMax += colorRampStep;
+	}
+	console.log("counties");
+	console.log(enabledCounties);
+
+	var choroplethStyle = {
+		"color": "#000000",
+	    "weight": 3,
+	    "fillOpacity": 0.8
+	};
+
+	for(var i = 0; i < enabledCounties.length; i++){
+		choroplethStyle.fillColor = enabledCounties[i].hex;
+
+		this.cntyLeafletObj[enabledCounties[i].countyIndex].setStyle(choroplethStyle);
 	}
 }
