@@ -1,10 +1,14 @@
 function Map(){
 	this.data;
 
-	this.map = L.map('map', {maxZoom: 9, minZoom: 7}).setView([38.8, -77.3], 8);
+	this.map = L.map('map', {maxZoom: 9, minZoom: 7, zoomControl: false}).setView([38.8, -77.3], 8);
 
-	L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	    attribution: "OpenStreetMap contributors",
+	L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
+	    attribution: "OpenStreetMap contributors"
+	}).addTo(this.map);
+
+	L.control.zoom({
+	    position:'topright'
 	}).addTo(this.map);
 
 	this.mdcnty = {

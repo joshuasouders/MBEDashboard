@@ -199,15 +199,24 @@ Panel.prototype.updateAlterableData = function(){
 	var localEnabledSpecialties = this.enabledSpecialties;
 	var localEnabledCounties = this.enabledCounties;
 
+	var activeFilterCount = 0;
+
 	//this covers the case where no filters are selected, which defaults to everything being displayed on the map
 	if(localEnabledIndustries.length == 0){
 		localEnabledIndustries = this.allIndustries;
+		activeFilterCount++;
 	}
 	if(localEnabledSpecialties.length == 0){
 		localEnabledSpecialties = this.allSpecialties;
+		activeFilterCount++;
 	}
 	if(localEnabledCounties.length == 0){
 		localEnabledCounties = this.allCounties;
+		activeFilterCount++;
+	}
+
+	if(activeFilterCount == 3){
+		$(".filterHeader").css("display", "none");
 	}
 
 	//start with a blank object, we have items in there to conform to how the object is set up in originalData just to maintain a common JSON schema

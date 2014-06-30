@@ -3,19 +3,21 @@ body{
 }
 #map{ 
 	height: 100%;
-	width:75%;
+	width:100%%;
 	float:right;
 }
 #panel{
+	background: rgba(0,0,0,0.4);
+	z-index: 99999;
 	width:25%;
 	height:100%;
 	padding:15px;
 	float:left;
 	position:absolute;
-	background-color:#cccccc;
 }
 .panel-default{
-	background-color:#1439a2;
+	background-color:#000000;
+	border:none;
 }
 .header{
 	text-align:center;
@@ -30,7 +32,7 @@ h5{
 }
 .dropdown-toggle{
 	width:100%;
-	background-color:#ffffff;
+	background-color:#F5F5F5;
 }
 .dropdown{
 	margin-bottom:10px;
