@@ -56,3 +56,24 @@ h5{
 .scrollable{
 	overflow:auto;
 }
+
+#mdlogo{
+	width:100%;
+	padding-bottom:15px;
+}
+
+#statestatlogo{
+	width:50%;
+}
+
+#mbelogo{
+	width:50%;
+	float:left;
+}
+
+#logoPanel{
+	position:absolute;
+	bottom:0;
+	right:0;
+	padding:15px;
+}
