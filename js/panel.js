@@ -57,7 +57,7 @@ Panel.prototype.populateDropdown = function(){
 		//we create an onclick callback on the contents of the dropdown
 		$('#c' + i).click(function(e) {
 			//when an county entry is clicked, we add the filter by calling addCountyFilter with the argument of the county name
-			self.addCountyFilter(e.currentTarget.innerText, e.currentTarget.id.slice(1));
+			self.addCountyFilter(e.currentTarget.innerHTML, e.currentTarget.id.slice(1));
 		});
 	}
 
@@ -79,12 +79,71 @@ Panel.prototype.addIndustryFilter = function(SHORT_CODE_PARAM){
 			console.log("\nAn industry filter has been added :");
 			console.log(this.allIndustries[i]);
 			this.enabledIndustries.push(this.allIndustries[i]);
+			this.popuplateSpecialties(SHORT_CODE_PARAM);
 			this.addFilterGUI(this.allIndustries[i].SHORT_DESC + ' (' + this.allIndustries[i].SHORT_CODE + ')', this.allIndustries[i].SHORT_CODE, "industry");
 			//since we've changed the filter set and therefore the data to display, we need to update alterableData
 			this.updateAlterableData();
 			return;
 		}
 	}
+}
+
+Panel.prototype.popuplateSpecialties = function(SHORT_CODE_PARAM){
+	var flag = 0;
+	var self = this;
+
+	for(var i = 0; i < this.originalData.items.length; i++){
+		if(this.originalData.items[i].SHORT_CODE == SHORT_CODE_PARAM){
+			if(this.allSpecialties.length == 0){
+				if($('#specialtyDropdown').html() == 'You must first select an industry before selecting an industry specialty.'){
+					$('#specialtyDropdown').html('');
+				}
+
+				this.allSpecialties.push({"NAICS_CODE": this.originalData.items[i].NAICS_CODE, "NAICS_DESCRIPTION": this.originalData.items[i].NAICS_DESC});
+			
+				$('#specialtyDropdown').append('<li role="presentation"><a role="menuitem" id="s' + this.originalData.items[i].NAICS_CODE + '" tabindex="-1" href="#">' + this.originalData.items[i].NAICS_DESC + '</a></li>');
+
+				//we create an onclick callback on the id of the dropdown entry we just created
+				$('#s'+this.originalData.items[i].NAICS_CODE).click(function(e) {
+					//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the SHORT_CODE (which we generate from the HTML ID tag)
+					self.addSpecialtyFilter(e.currentTarget.innerHTML, e.currentTarget.id.slice(1));
+				});	
+
+				flag = 1;
+			}
+			else if(this.allSpecialties[this.allSpecialties.length - 1].NAICS_CODE != this.originalData.items[i].NAICS_CODE){
+				this.allSpecialties.push({"NAICS_CODE": this.originalData.items[i].NAICS_CODE, "NAICS_DESCRIPTION": this.originalData.items[i].NAICS_DESC});
+
+				$('#specialtyDropdown').append('<li role="presentation"><a role="menuitem" id="s' + this.originalData.items[i].NAICS_CODE + '" tabindex="-1" href="#">' + this.originalData.items[i].NAICS_DESC + '</a></li>');
+
+				//we create an onclick callback on the id of the dropdown entry we just created
+				$('#s'+this.originalData.items[i].NAICS_CODE).click(function(e) {
+					//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the SHORT_CODE (which we generate from the HTML ID tag)
+					self.addSpecialtyFilter(e.currentTarget.innerHTML, e.currentTarget.id.slice(1));
+				});	
+
+				flag = 1;
+			}
+			else{}
+		}
+		else if(flag == 1){
+			return;
+		}
+	}
+}
+
+Panel.prototype.addSpecialtyFilter = function(text, id){
+	//make sure we're not throwing in a duplicate specialty value
+	for(var i = 0; i < this.enabledSpecialties.length; i++){
+		console.log(this.enabledSpecialties);
+		if(this.enabledSpecialties[i].NAICS_CODE == id){
+			console.log("Attempting to create duplicate specialty filter. Aborting creation.");
+			return;
+		}
+	}
+	this.enabledSpecialties.push({"NAICS_CODE": id, "NAICS_DESC": text});
+	this.addFilterGUI(text, id, "specialty");
+	this.updateAlterableData();
 }
 
 Panel.prototype.addCountyFilter = function(county, id){
@@ -142,7 +201,7 @@ Panel.prototype.removeFilterGUI = function(liHTML, id, type){
 		this.removeIndustryFilter(id);
 	}
 	else if(type == "s"){
-		console.error("calling specialty type removal. this function has not been implemented yet.")
+		this.removeSpecialtyFilter(id);
 	}
 	else{
 		console.error("Type passed to removeFilterGUI is not recognized");
@@ -157,10 +216,40 @@ Panel.prototype.removeIndustryFilter = function(SHORT_CODE_PARAM){
 		if(this.enabledIndustries[i] == obj){
 			//remove it from the array of enabled industries
 			this.enabledIndustries.splice(i, 1);
-			//fix the map to incorporate these changes
-			this.updateAlterableData();
+			break;
 		}
 	}
+
+	var c = 0;
+	var length = this.enabledSpecialties.length;
+	for(var i = 0; i < length; i++){
+		if(SHORT_CODE_PARAM == this.enabledSpecialties[c].NAICS_CODE.substring(0,2)){
+			$('#xs' + this.enabledSpecialties[c].NAICS_CODE).parent().remove();
+			$('#s' + this.enabledSpecialties[c].NAICS_CODE).parent().remove();
+			this.enabledSpecialties.splice(c, 1);
+		}
+		else{
+			c++;
+		}
+	}
+
+	if(this.enabledSpecialties.length == 0){
+		console.log("here");
+		$('#specialtyDropdown').text('You must first select an industry before selecting an industry specialty.');
+	}
+
+	c = 0;
+	length = this.allSpecialties.length;
+	for(var i = 0; i < length; i++){
+		if(SHORT_CODE_PARAM == this.allSpecialties[c].NAICS_CODE.toString().substring(0,2)){
+			this.allSpecialties.splice(c, 1);
+		}
+		else{
+			c++;
+		}
+	}
+	//fix the map to incorporate these changes
+	this.updateAlterableData();
 }
 
 //the id here is the index in this.allCounties in which the textual representation of the county resides
@@ -173,6 +262,17 @@ Panel.prototype.removeCountyFilter = function(id){
 		if(this.enabledCounties[i] == countyText){
 			//remove it from the array of enabled counties
 			this.enabledCounties.splice(i, 1);
+			//fix the map to incorporate these changes
+			this.updateAlterableData();
+		}
+	}
+}
+
+Panel.prototype.removeSpecialtyFilter = function(NAICS_CODE_PARAM){
+	for(var i = 0; i < this.enabledSpecialties.length; i++){
+		if(this.enabledSpecialties[i].NAICS_CODE == NAICS_CODE_PARAM){
+			//remove it from the array of enabled industries
+			this.enabledSpecialties.splice(i, 1);
 			//fix the map to incorporate these changes
 			this.updateAlterableData();
 		}
@@ -207,7 +307,7 @@ Panel.prototype.updateAlterableData = function(){
 		activeFilterCount++;
 	}
 	if(localEnabledSpecialties.length == 0){
-		localEnabledSpecialties = this.allSpecialties;
+		localEnabledSpecialties = new Array();
 		activeFilterCount++;
 	}
 	if(localEnabledCounties.length == 0){
@@ -232,15 +332,34 @@ Panel.prototype.updateAlterableData = function(){
 				//we do this check because at this point we're starting to get nested loops and we want to kick into the full nest as few times as possible or performance will degrade
 				//if we kick into this if statement, it means that the entry can be from any county
 				if(localEnabledCounties.length == 24){
-					this.alterableData.items.push(this.originalData.items[x]);
+					if(localEnabledSpecialties.length == 0){
+						this.alterableData.items.push(this.originalData.items[x]);
+					}
+					else{
+						for(var z = 0; z < localEnabledSpecialties.length; z++){
+							if(this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE){
+								this.alterableData.items.push(this.originalData.items[x]);
+								break;
+							}
+						}
+					}
 				}
 				//otherwise county filters have been added and we need to make sure each entry corresponds to a wanted county
 				else{
 					//loop through each enabled county name and check to see if it corresponds to the given entry
 					for(var y = 0; y < localEnabledCounties.length; y++){
 						if(this.originalData.items[x].COUNTY == localEnabledCounties[y]){
-							this.alterableData.items.push(this.originalData.items[x]);
-							break;
+							if(localEnabledSpecialties.length == 0){
+								this.alterableData.items.push(this.originalData.items[x]);
+							}
+							else{
+								for(var z = 0; z < localEnabledSpecialties.length; z++){
+									if(this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE){
+										this.alterableData.items.push(this.originalData.items[x]);
+										break;
+									}
+								}
+							}
 						}
 					}
 				}
@@ -248,7 +367,13 @@ Panel.prototype.updateAlterableData = function(){
 		}
 	}
 
-	this.map.setData(this.alterableData, localEnabledCounties);
+	var industryFilterSelected = false;
+
+	if(this.enabledIndustries.length != 0){
+		industryFilterSelected = true;
+	}
+
+	this.map.setData(this.alterableData, localEnabledCounties, industryFilterSelected);
 
 	console.log("\nalterableData has been updated. The current dataset is: ");
 	console.log(this.alterableData);
