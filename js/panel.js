@@ -37,7 +37,7 @@ Panel.prototype.populateDropdown = function(){
 			//if we satisfy the check, we push the object we created earlier into the allIndustries array
 			this.allIndustries.push(obj);
 			//this inserts an entry into the industryDropdown container
-			$('#industryDropdown').append('<li role="presentation"><a role="menuitem" id="i' + obj.SHORT_CODE + '" tabindex="-1" href="#">'+obj.SHORT_DESC+' ('+obj.SHORT_CODE+')</a></li>');
+			$('#industryDropdown').append('<li role="presentation"><a role="menuitem" id="i' + obj.SHORT_CODE + '" tabindex="-1" href="#">'+obj.SHORT_DESC+' (NAICS Code - '+obj.SHORT_CODE+')</a></li>');
 
 			//we create an onclick callback on the id of the dropdown entry we just created
 			$('#i'+obj.SHORT_CODE).click(function(e) {
@@ -80,7 +80,7 @@ Panel.prototype.addIndustryFilter = function(SHORT_CODE_PARAM){
 			console.log(this.allIndustries[i]);
 			this.enabledIndustries.push(this.allIndustries[i]);
 			this.popuplateSpecialties(SHORT_CODE_PARAM);
-			this.addFilterGUI(this.allIndustries[i].SHORT_DESC + ' (' + this.allIndustries[i].SHORT_CODE + ')', this.allIndustries[i].SHORT_CODE, "industry");
+			this.addFilterGUI(this.allIndustries[i].SHORT_DESC + ' (NAICS Code - ' + this.allIndustries[i].SHORT_CODE + ')', this.allIndustries[i].SHORT_CODE, "industry");
 			//since we've changed the filter set and therefore the data to display, we need to update alterableData
 			this.updateAlterableData();
 			return;
