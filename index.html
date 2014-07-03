@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="css/style.css" />
 		<!--[if lte IE 8]>
 			<link rel="stylesheet" href="css/style.ie8.css" />
+
 		<![endif]-->
 
 		<!--JS-->
@@ -57,7 +58,11 @@
 		</div>
 		<div id="map"></div>
 	</body>
-	<!--JS-->
+	<!--[if lte IE 8]>
+		<script>
+			$("#map").height($(window).height()).width($(window).width());
+		</script>
+	<![endif]-->
 	<script src="js/map.js"></script>
 	<script src="js/panel.js"></script>
 	<script src="js/app.js"></script>
