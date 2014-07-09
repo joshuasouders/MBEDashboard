@@ -113,7 +113,7 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty, industryFilterSel
 		return 0;
 	});
 
-	var colorRamp = ['#5dff05', '#98fe05', '#d2fe05', '#feef05', '#fdb405', '#fd7a05', '#fd3f05', '#fc0505'];
+	var colorRamp = ['#ffffcc', '#ffeda0', '#fed976', '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#b10026'];
 
 	var numEntriesPerStep = enabledCounties.length/colorRamp.length;
 	console.log(numEntriesPerStep);
