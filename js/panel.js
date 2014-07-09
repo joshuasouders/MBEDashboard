@@ -50,16 +50,6 @@ Panel.prototype.populateDropdown = function(){
 	//populate county dropdown
 	//first we just make a static list of counties
 	this.allCounties.push("Allegany", "Anne Arundel", "Baltimore", "Baltimore City", "Calvert", "Caroline", "Carroll", "Cecil", "Charles", "Dorchester", "Frederick", "Garrett", "Harford", "Howard", "Kent", "Montgomery", "Prince George's", "Queen Anne's", "Somerset", "St. Mary's", "Talbot", "Washington", "Wicomico", "Worcester");
-	//now we loop through and add all of the dropdown entries for each of the counties in the countyDropdown container
-	for(var i = 0; i < this.allCounties.length; i++){
-		$('#countyDropdown').append('<li role="presentation"><a role="menuitem" id="c' + i + '" tabindex="-1" href="#">'+this.allCounties[i]+'</a></li>');
-
-		//we create an onclick callback on the contents of the dropdown
-		$('#c' + i).click(function(e) {
-			//when an county entry is clicked, we add the filter by calling addCountyFilter with the argument of the county name
-			self.addCountyFilter(e.currentTarget.innerHTML, e.currentTarget.id.slice(1));
-		});
-	}
 
 	this.updateAlterableData();
 }
@@ -146,20 +136,6 @@ Panel.prototype.addSpecialtyFilter = function(text, id){
 	this.updateAlterableData();
 }
 
-Panel.prototype.addCountyFilter = function(county, id){
-	//make sure we're not throwing in a duplicate county value
-	for(var i = 0; i < this.enabledCounties.length; i++){
-		if(this.enabledCounties[i] == county){
-			console.log("Attempting to create duplicate county filter. Aborting creation.");
-			return;
-		}
-	}
-	
-	this.enabledCounties.push(county);
-	this.addFilterGUI(county, id, "county");
-	this.updateAlterableData();
-}
-
 //this adds the filter GUI element so that people can see what filters are enabled on the side panel and X out of them if needed
 Panel.prototype.addFilterGUI = function(filterText, id, type){
 	//just initializing class level scope so that later we can use the class' scope in jquery callbacks
@@ -194,10 +170,7 @@ Panel.prototype.addFilterGUI = function(filterText, id, type){
 //id - this is the id of the filter. for industry it's SHORT_ID, for county it corresponds to alpabetical order of the counties
 //type - either the string c for county, i for industry, or s for specialty
 Panel.prototype.removeFilterGUI = function(liHTML, id, type){
-	if(type == "c"){
-		this.removeCountyFilter(id);
-	}
-	else if(type == "i"){
+	if(type == "i"){
 		this.removeIndustryFilter(id);
 	}
 	else if(type == "s"){
@@ -250,22 +223,6 @@ Panel.prototype.removeIndustryFilter = function(SHORT_CODE_PARAM){
 	}
 	//fix the map to incorporate these changes
 	this.updateAlterableData();
-}
-
-//the id here is the index in this.allCounties in which the textual representation of the county resides
-Panel.prototype.removeCountyFilter = function(id){
-	var countyText = this.allCounties[id];
-
-	console.log(countyText);
-
-	for(var i = 0; i < this.enabledCounties.length; i++){
-		if(this.enabledCounties[i] == countyText){
-			//remove it from the array of enabled counties
-			this.enabledCounties.splice(i, 1);
-			//fix the map to incorporate these changes
-			this.updateAlterableData();
-		}
-	}
 }
 
 Panel.prototype.removeSpecialtyFilter = function(NAICS_CODE_PARAM){
@@ -329,40 +286,18 @@ Panel.prototype.updateAlterableData = function(){
 				//if we're this far into the loop we've found an entry for an industry that we were searching for
 				//now we have to perform a check to see if it's in a county that we're searching for
 
-				//we do this check because at this point we're starting to get nested loops and we want to kick into the full nest as few times as possible or performance will degrade
-				//if we kick into this if statement, it means that the entry can be from any county
-				if(localEnabledCounties.length == 24){
-					if(localEnabledSpecialties.length == 0){
-						this.alterableData.items.push(this.originalData.items[x]);
-					}
-					else{
-						for(var z = 0; z < localEnabledSpecialties.length; z++){
-							if(this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE){
-								this.alterableData.items.push(this.originalData.items[x]);
-								break;
-							}
-						}
-					}
+				if(localEnabledSpecialties.length == 0){
+					this.alterableData.items.push(this.originalData.items[x]);
 				}
-				//otherwise county filters have been added and we need to make sure each entry corresponds to a wanted county
 				else{
-					//loop through each enabled county name and check to see if it corresponds to the given entry
-					for(var y = 0; y < localEnabledCounties.length; y++){
-						if(this.originalData.items[x].COUNTY == localEnabledCounties[y]){
-							if(localEnabledSpecialties.length == 0){
-								this.alterableData.items.push(this.originalData.items[x]);
-							}
-							else{
-								for(var z = 0; z < localEnabledSpecialties.length; z++){
-									if(this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE){
-										this.alterableData.items.push(this.originalData.items[x]);
-										break;
-									}
-								}
-							}
+					for(var z = 0; z < localEnabledSpecialties.length; z++){
+						if((this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE)||(this.originalData.items[x].SHORT_CODE != localEnabledSpecialties[z].NAICS_CODE.substring(0,2))){
+							this.alterableData.items.push(this.originalData.items[x]);
+							break;
 						}
 					}
 				}
+				
 			}
 		}
 	}
