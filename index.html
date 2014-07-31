@@ -27,19 +27,23 @@
 				<div class="panel-body">
 					<h4 class="header">Minority Business Enterprise</h4>
 					<div class="dropdown">
-					  	<button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+					  	<button class="btn fullwidth-color-style" type="button" id="dropdownMenu1" data-toggle="dropdown">
 							Industry
 					    	<span class="caret"></span>
 					  	</button>
 				  		<ul id="industryDropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1"></ul>
 					</div>
 					<div class="dropdown">
-					  	<button class="btn dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+					  	<button class="btn fullwidth-color-style" type="button" id="dropdownMenu2" data-toggle="dropdown">
 							Specialty
 					    	<span class="caret"></span>
 					  	</button>
 				  		<ul id="specialtyDropdown" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">You must first select an industry before selecting an industry specialty.</ul>
 					</div>
+					<br>
+					<form method="get" action="data/MBE.csv">
+						<button type="button" class="btn fullwidth-color-style" id="export">Export All Data as CSV</button>
+					</form>
 					<div id="activeFilters">
 						<h5 class="header filterHeader">Active Filters</h5>
 						<ul class="list-group" id="activeFilterContainer"></ul>

@@ -31,7 +31,7 @@ h5{
 	margin-top:25px;
 	color:#ffffff;
 }
-.dropdown-toggle{
+.fullwidth-color-style{
 	width:100%;
 	background-color:#F5F5F5;
 }
@@ -77,4 +77,8 @@ h5{
 	bottom:0;
 	right:0;
 	padding:15px;
+}
+
+#export{
+	width:100%;
 }
