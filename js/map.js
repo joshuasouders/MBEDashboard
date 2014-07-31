@@ -45,7 +45,7 @@ function Map(){
 
 	this.outlineStyle = {
 		"color": "#000000",
-	    "weight": 3,
+	    "weight": 2,
 	    "fillOpacity": 0
 	};
 
@@ -142,7 +142,7 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty, industryFilterSel
 
 	var choroplethStyle = {
 		"color": "#000000",
-	    "weight": 3,
+	    "weight": 2,
 	    "fillOpacity": 0.8
 	};
 
