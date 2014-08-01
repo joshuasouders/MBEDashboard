@@ -132,7 +132,7 @@ Panel.prototype.addSpecialtyFilter = function(text, id){
 		}
 	}
 	this.enabledSpecialties.push({"NAICS_CODE": id, "NAICS_DESC": text});
-	this.addFilterGUI(text, id, "specialty");
+	this.addFilterGUI("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + text, id, "specialty");
 	this.updateAlterableData();
 }
 
@@ -159,7 +159,12 @@ Panel.prototype.addFilterGUI = function(filterText, id, type){
 		console.error("Type not recognized");
 	}
 
-	$("#activeFilterContainer").append('<li class="list-group-item"><span id="x' + idPrefix + id + '" class="badge">X</span>' + filterText + '</li>');
+	if(type == "specialty"){
+		$("#xi" + id.substring(0,2)).parent().after('<li class="list-group-item"><span id="x' + idPrefix + id + '" class="badge">X</span>' + filterText + '</li>');
+	}
+	else{
+		$("#activeFilterContainer").append('<li class="list-group-item"><span id="x' + idPrefix + id + '" class="badge">X</span>' + filterText + '</li>');
+	}
 
 	$('#x' + idPrefix + id).click(function(e) {
 		self.removeFilterGUI($('#' + e.currentTarget.id).parent(), e.currentTarget.id.slice(2), e.currentTarget.id.slice(1, 2));
