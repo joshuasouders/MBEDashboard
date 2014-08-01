@@ -19,6 +19,7 @@ body{
 .panel-default{
 	background-color:#000000;
 	border:none;
+	max-height:100%;
 }
 .header{
 	text-align:center;
@@ -77,8 +78,14 @@ h5{
 	bottom:0;
 	right:0;
 	padding:15px;
+	z-index:-1;
 }
 
 #export{
 	width:100%;
+}
+
+#activeFilterContainer{
+	max-height:35%;
+	overflow-y:auto;
 }
