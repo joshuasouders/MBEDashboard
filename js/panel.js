@@ -276,6 +276,8 @@ Panel.prototype.updateAlterableData = function(){
 		$(".filterHeader").css("display", "none");
 	}
 
+	console.log(localEnabledSpecialties);
+
 	//start with a blank object, we have items in there to conform to how the object is set up in originalData just to maintain a common JSON schema
 	this.alterableData = {items:[]};
 
@@ -284,17 +286,31 @@ Panel.prototype.updateAlterableData = function(){
 		for(var x = 0; x < this.originalData.items.length; x++){
 			if(this.originalData.items[x].SHORT_CODE == localEnabledIndustries[i].SHORT_CODE){
 				//if we're this far into the loop we've found an entry for an industry that we were searching for
-				//now we have to perform a check to see if it's in a county that we're searching for
 
+				var flag = false;
+				var added = false;
+
+				//if no specialties are enabled, we can just push everything
 				if(localEnabledSpecialties.length == 0){
 					this.alterableData.items.push(this.originalData.items[x]);
 				}
 				else{
+					//otherwise, we need to loop through our localEnabledSpecialties to see if the specialty of the given feature is in the list of specialties we should allow
 					for(var z = 0; z < localEnabledSpecialties.length; z++){
-						if((this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE)||(this.originalData.items[x].SHORT_CODE != localEnabledSpecialties[z].NAICS_CODE.substring(0,2))){
+						//this means that the NAICS Code is on the list of NAICS codes that we want to put on the map
+						if(this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE){
 							this.alterableData.items.push(this.originalData.items[x]);
+							added = true;
 							break;
 						}
+						//if we trip the flag, it means that the industry has a specialty filter on it which means that we can't add it to the map unless it fits in a specialization
+						if(this.originalData.items[x].SHORT_CODE == localEnabledSpecialties[z].NAICS_CODE.substring(0,2)){
+							flag = true;
+						}
+					}
+					//we should add the entry if it's not in an industry with a specialization filter
+					if(!flag && !added){
+						this.alterableData.items.push(this.originalData.items[x]);
 					}
 				}
 				
