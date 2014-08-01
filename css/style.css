@@ -17,7 +17,7 @@ body{
 	position:absolute;
 }
 .panel-default{
-	background-color:#000000;
+	background: rgba(0,0,0,0.7);
 	border:none;
 	max-height:100%;
 }
