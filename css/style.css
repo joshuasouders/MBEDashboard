@@ -1,4 +1,4 @@
-body{
+html, body{
 	margin:0px;
 	height:100%;
 }
@@ -34,6 +34,11 @@ h5{
 }
 .fullwidth-color-style{
 	width:100%;
+	background-color:#F5F5F5;
+}
+.csv-width{
+	width:80%;
+	margin-left:10%;
 	background-color:#F5F5F5;
 }
 .dropdown{
@@ -81,11 +86,11 @@ h5{
 	z-index:-1;
 }
 
-#export{
-	width:100%;
-}
-
 #activeFilterContainer{
 	max-height:35%;
 	overflow-y:auto;
+}
+
+.popupText{
+	font-size:15px;
 }
