@@ -20,7 +20,73 @@ function Panel(map){
 Panel.prototype.setData = function(data){
 	this.originalData = data;
 	this.alterableData = data;
+	this.initSearch();
 	this.populateDropdown();
+}
+
+Panel.prototype.initSearch = function(){
+		$('#search-button').on('click', function (e) {
+			var searchInput = document.getElementById("search-input").value;
+
+			if(searchInput != ""){
+
+				$.ajax({
+			    	url: 'http://data.maryland.gov/resource/viap-eh6m.json?$q=' + searchInput.toUpperCase(),
+			    	dataType: 'JSON',
+			    	jsonp: false,
+			        jsonpCallback: 'JSONPMethod',
+			        type: 'GET',
+			        success: function (returnedData) {
+			            var popupString = '<h3>Search Results ';
+			            if(returnedData.length >= 999){
+			            	popupString += " (First 1000 Rows) ";
+			            }
+			            popupString += "- \"" + searchInput +
+			            	'\"<hr>'+
+							'<p>'+
+							'<div class="panel">'+
+				  					'<table class="table scrollable">'+
+				   						'<thead>'+
+				   							'<tr>'+
+				   								'<th>#</th>'+
+				   								'<th>Name</th>'+
+				   								'<th>Industry</th>'+
+				   								'<th>Specialization</th>'+
+				   							'</tr>'+
+				   						'</thead>'+
+				   						'<tbody>';
+
+				   		for(var x = 0; x < returnedData.length; x++){
+		   					popupString += '<tr><small>'+
+				   				'<td>' + (x+1) + '</td>'+
+								'<td>' + returnedData[x].name + '</td>'+
+								'<td>' + returnedData[x].short_desc + '</td>';
+
+							if(returnedData[x].naics_desc != ""){
+								popupString += '<td>' + returnedData[x].naics_desc + '</td>';
+							}
+							else{
+								popupString += '<td>No Specialization</td>';
+							}
+
+							popupString += '</small></tr>';
+				   		}
+
+				   		popupString += '<tbody>'+
+									'</table>'+
+								'</div>'+
+							'</div>'+
+							'</p>';
+
+						$("#modal-body").html(popupString);
+
+						$('#modal').modal('show');
+			        }
+			    }).fail( function(d, textStatus, error) {
+			        console.error("getJSON failed, status: " + textStatus + ", error: "+error);
+			    });
+			}
+		});
 }
 
 Panel.prototype.populateDropdown = function(){
