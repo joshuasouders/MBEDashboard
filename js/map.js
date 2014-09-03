@@ -158,7 +158,7 @@ Map.prototype.createChoropleth = function(numEntriesPerCounty, industryFilterSel
 Map.prototype.createPopups = function(enabledCounties, industryFilterSelected){
 	if(industryFilterSelected){
 		for(var i = 0; i < enabledCounties.length; i++){
-			var countyText = "County ";
+			var countyText = "COUNTY ";
 			if(this.mdcnty.features[enabledCounties[i].countyIndex].properties.name == "BALTIMORE CITY"){
 				countyText = "";
 			}
@@ -203,7 +203,7 @@ Map.prototype.createPopups = function(enabledCounties, industryFilterSelected){
 				'</p>';
 
 			if(count == 1){
-				var countyText = "County ";
+				var countyText = "COUNTY ";
 				if(this.mdcnty.features[enabledCounties[i].countyIndex].properties.name == "BALTIMORE CITY"){
 					countyText = "";
 				}
@@ -221,7 +221,7 @@ Map.prototype.createPopups = function(enabledCounties, industryFilterSelected){
 		for(var i = 0; i < enabledCounties.length; i++){
 			var popup = L.popup({"minWidth": 700, "maxHeight": 350});
 			var countyText = "County ";
-			if(this.mdcnty.features[enabledCounties[i].countyIndex].properties.name == "Baltimore City"){
+			if(this.mdcnty.features[enabledCounties[i].countyIndex].properties.name == "BALTIMORE CITY"){
 				countyText = "";
 			}
 			var popupString = '<h3>' + this.mdcnty.features[enabledCounties[i].countyIndex].properties.name + ' ' + countyText + '- ' + enabledCounties[i].value + ' Certified Minority Businesses</h3>'+
