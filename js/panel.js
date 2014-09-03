@@ -41,42 +41,55 @@ Panel.prototype.initSearch = function(){
 			            if(returnedData.length >= 999){
 			            	popupString += " (First 1000 Rows) ";
 			            }
-			            popupString += "- \"" + searchInput +
+			            if(returnedData.length == 0){
+			            	popupString += "- \"" + searchInput +
 			            	'\"<hr>'+
-							'<p>'+
-							'<div class="panel">'+
-				  					'<table class="table scrollable">'+
-				   						'<thead>'+
-				   							'<tr>'+
-				   								'<th>#</th>'+
-				   								'<th>Name</th>'+
-				   								'<th>Industry</th>'+
-				   								'<th>Specialization</th>'+
-				   							'</tr>'+
-				   						'</thead>'+
-				   						'<tbody>';
+							'<p>No Results</p>';
+			            }
+			            else{
+				            popupString += "- \"" + searchInput +
+				            	'\"<hr>'+
+								'<p>'+
+								'<div class="panel">'+
+					  					'<table class="table scrollable">'+
+					   						'<thead>'+
+					   							'<tr>'+
+					   								'<th>#</th>'+
+					   								'<th>Name</th>'+
+					   								'<th>Industry</th>'+
+					   								'<th>Specialization</th>'+
+					   							'</tr>'+
+					   						'</thead>'+
+					   						'<tbody>';
 
-				   		for(var x = 0; x < returnedData.length; x++){
-		   					popupString += '<tr><small>'+
-				   				'<td>' + (x+1) + '</td>'+
-								'<td>' + returnedData[x].name + '</td>'+
-								'<td>' + returnedData[x].short_desc + '</td>';
+					   		for(var x = 0; x < returnedData.length; x++){
+			   					popupString += '<tr><small>'+
+					   				'<td>' + (x+1) + '</td>'+
+									'<td>' + returnedData[x].name + '</td>'+
+									'<td>' + returnedData[x].short_desc + '</td>';
 
-							if(returnedData[x].naics_desc != ""){
-								popupString += '<td>' + returnedData[x].naics_desc + '</td>';
-							}
-							else{
-								popupString += '<td>No Specialization</td>';
-							}
+								if(returnedData[x].naics_desc != ""){
+									popupString += '<td>' + returnedData[x].naics_desc + '</td>';
+								}
+								else{
+									popupString += '<td>No Specialization</td>';
+								}
+								if(returnedData[x].details != ""){
+									popupString += '<td>' + returnedData[x].details + '</td>';
+								}
+								else{
+									popupString += '<td>No Details</td>';
+								}
 
-							popupString += '</small></tr>';
-				   		}
+								popupString += '</small></tr>';
+					   		}
 
-				   		popupString += '<tbody>'+
-									'</table>'+
+					   		popupString += '<tbody>'+
+										'</table>'+
+									'</div>'+
 								'</div>'+
-							'</div>'+
-							'</p>';
+								'</p>';
+						}
 
 						$("#modal-body").html(popupString);
 

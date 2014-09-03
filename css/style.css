@@ -23,6 +23,8 @@ html, body{
 }
 .header{
 	text-align:center;
+	color:#ffffff;
+	font-family: "Times New Roman", Georgia, Serif;
 }
 h4{
 	color:#ffffff;
@@ -37,10 +39,8 @@ h5{
 	background-color:#F5F5F5;
 }
 .csv-width{
-	width:80%;
-	margin-left:10%;
+	float:right;
 	background-color:#F5F5F5;
-	margin-bottom:10px;
 }
 .dropdown{
 	margin-bottom:10px;
@@ -71,12 +71,14 @@ h5{
 }
 
 #statestatlogo{
-	width:50%;
+	width:27%;
+	margin-left:11%;
 }
 
 #mbelogo{
-	width:50%;
+	width:30%;
 	float:left;
+	margin-left:25%;
 }
 
 #logoPanel{
@@ -94,4 +96,12 @@ h5{
 
 .popupText{
 	font-size:15px;
+}
+
+.ten-bottom-margin{
+	margin-bottom:10px;
+}
+
+.leaflet-popup-content, .leaflet-popup-scrolled{
+	overflow-x:hidden;
 }

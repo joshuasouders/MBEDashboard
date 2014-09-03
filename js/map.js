@@ -2,7 +2,7 @@ function Map(){
 	this.data;
 
 	this.map = L.map('map', {maxZoom: 9, minZoom: 7, zoomControl: false}).setView([38.8, -77.9], 8);
-	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
 	    attribution: "OpenStreetMap contributors"
 	}).addTo(this.map);
 
@@ -163,18 +163,19 @@ Map.prototype.createPopups = function(enabledCounties, industryFilterSelected){
 				countyText = "";
 			}
 			var count = 1;
-			var popup = L.popup({"minWidth": 700, "maxHeight": 350});
+			var popup = L.popup({"minWidth": 800, "maxHeight": 350});
 			var popupString = '<h3>' + this.mdcnty.features[enabledCounties[i].countyIndex].properties.name + ' ' + countyText + '- ' + enabledCounties[i].value + ' Certified Minority Businesses</h3>'+
 				'<hr>'+
 				'<p>'+
-				'<div class="panel">'+
-	  					'<table class="table scrollable">'+
+				'<div class="panel" style="width:760px;">'+
+	  					'<table class="table scrollable table-nonfluid">'+
 	   						'<thead>'+
 	   							'<tr>'+
 	   								'<th>#</th>'+
 	   								'<th>Name</th>'+
 	   								'<th>Industry</th>'+
 	   								'<th>Specialization</th>'+
+	   								'<th>Details</th>'+
 	   							'</tr>'+
 	   						'</thead>'+
 	   						'<tbody>';
@@ -190,6 +191,12 @@ Map.prototype.createPopups = function(enabledCounties, industryFilterSelected){
 		   								}
 		   								else{
 		   									popupString += '<td>No Specialization</td>';
+		   								}
+		   								if(this.data[x].details != undefined){
+		   									popupString += '<td>' + this.data[x].details + '</td>';
+		   								}
+		   								else{
+		   									popupString += '<td>No Details</td>';
 		   								}
 		   							popupString += '</small></tr>';
 		   			count++;
@@ -215,11 +222,13 @@ Map.prototype.createPopups = function(enabledCounties, industryFilterSelected){
 			popup.setContent(popupString);
 
 			this.cntyLeafletObj[enabledCounties[i].countyIndex].bindPopup(popup);
+
+			$('.leaflet-popup-scrolled').css('overflow-x', 'hidden');
 		}
 	}
 	else{
 		for(var i = 0; i < enabledCounties.length; i++){
-			var popup = L.popup({"minWidth": 700, "maxHeight": 350});
+			var popup = L.popup({"minWidth": 700, "maxWidth":800});
 			var countyText = "County ";
 			if(this.mdcnty.features[enabledCounties[i].countyIndex].properties.name == "BALTIMORE CITY"){
 				countyText = "";
