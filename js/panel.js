@@ -29,19 +29,19 @@ Panel.prototype.populateDropdown = function(){
 
 	//populate industry dropdown
 	//we loop through alterable data, pulling out all of the titles for the dropdown
-	for(var i = 0; i < this.alterableData.items.length; i++){
+	for(var i = 0; i < this.alterableData.length; i++){
 		//create the object that we might add to allIndustries
-		var obj = {"SHORT_CODE": this.alterableData.items[i].SHORT_CODE, "SHORT_DESC": this.alterableData.items[i].SHORT_DESC};
+		var obj = {"short_code": this.alterableData[i].short_code, "short_desc": this.alterableData[i].short_desc};
 		//this if statement checks if we've already added the industry to the list. we also automatically add the 0 index in the array.
-		if((this.allIndustries.length == 0) || (this.allIndustries[this.allIndustries.length-1].SHORT_CODE != obj.SHORT_CODE)){
+		if((this.allIndustries.length == 0) || (this.allIndustries[this.allIndustries.length-1].short_code != obj.short_code)){
 			//if we satisfy the check, we push the object we created earlier into the allIndustries array
 			this.allIndustries.push(obj);
 			//this inserts an entry into the industryDropdown container
-			$('#industryDropdown').append('<li role="presentation"><a role="menuitem" id="i' + obj.SHORT_CODE + '" tabindex="-1" href="#">'+obj.SHORT_DESC+' (NAICS Code - '+obj.SHORT_CODE+')</a></li>');
+			$('#industryDropdown').append('<li role="presentation"><a role="menuitem" id="i' + obj.short_code + '" tabindex="-1" href="#">'+obj.short_desc+' (NAICS Code - '+obj.short_code+')</a></li>');
 
 			//we create an onclick callback on the id of the dropdown entry we just created
-			$('#i'+obj.SHORT_CODE).click(function(e) {
-				//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the SHORT_CODE (which we generate from the HTML ID tag)
+			$('#i'+obj.short_code).click(function(e) {
+				//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the short_code (which we generate from the HTML ID tag)
 				self.addIndustryFilter(e.currentTarget.id.slice(1));
 			});
 		}
@@ -49,15 +49,15 @@ Panel.prototype.populateDropdown = function(){
 
 	//populate county dropdown
 	//first we just make a static list of counties
-	this.allCounties.push("Allegany", "Anne Arundel", "Baltimore", "Baltimore City", "Calvert", "Caroline", "Carroll", "Cecil", "Charles", "Dorchester", "Frederick", "Garrett", "Harford", "Howard", "Kent", "Montgomery", "Prince George's", "Queen Anne's", "Somerset", "St. Mary's", "Talbot", "Washington", "Wicomico", "Worcester");
+	this.allCounties.push("ALLEGANY", "ANNE ARUNDEL", "BALTIMORE", "BALTIMORE CITY", "CALVERT", "CAROLINE", "CARROLL", "CECIL", "CHARLES", "DORCHESTER", "FREDERICK", "GARRETT", "HARFORD", "HOWARD", "KENT", "MONTGOMERY", "PRINCE GEORGE'S", "QUEEN ANNE'S", "SOMERSET", "ST. MARY'S", "TALBOT", "WASHINGTON", "WICOMICO", "WORCESTER");
 
 	this.updateAlterableData();
 }
 
 Panel.prototype.addIndustryFilter = function(SHORT_CODE_PARAM){
-	//we loop through every entry in allIndustries to try to find the entry where SHORT_CODE is equal to the parameter that we passed in
+	//we loop through every entry in allIndustries to try to find the entry where short_code is equal to the parameter that we passed in
 	for(var i = 0; i < this.allIndustries.length; i++){
-		if(this.allIndustries[i].SHORT_CODE == SHORT_CODE_PARAM){
+		if(this.allIndustries[i].short_code == SHORT_CODE_PARAM){
 			//if we satisfy that condition, we need to loop through and make sure we're not entering in a duplicate
 			for(var x = 0; x < this.enabledIndustries.length; x++){
 				if(this.enabledIndustries[x] == this.allIndustries[i]){
@@ -70,7 +70,7 @@ Panel.prototype.addIndustryFilter = function(SHORT_CODE_PARAM){
 			console.log(this.allIndustries[i]);
 			this.enabledIndustries.push(this.allIndustries[i]);
 			this.popuplateSpecialties(SHORT_CODE_PARAM);
-			this.addFilterGUI(this.allIndustries[i].SHORT_DESC + ' (NAICS Code - ' + this.allIndustries[i].SHORT_CODE + ')', this.allIndustries[i].SHORT_CODE, "industry");
+			this.addFilterGUI(this.allIndustries[i].short_desc + ' (NAICS Code - ' + this.allIndustries[i].short_code + ')', this.allIndustries[i].short_code, "industry");
 			//since we've changed the filter set and therefore the data to display, we need to update alterableData
 			this.updateAlterableData();
 			return;
@@ -82,33 +82,33 @@ Panel.prototype.popuplateSpecialties = function(SHORT_CODE_PARAM){
 	var flag = 0;
 	var self = this;
 
-	for(var i = 0; i < this.originalData.items.length; i++){
-		if(this.originalData.items[i].SHORT_CODE == SHORT_CODE_PARAM){
+	for(var i = 0; i < this.originalData.length; i++){
+		if(this.originalData[i].short_code == SHORT_CODE_PARAM){
 			if(this.allSpecialties.length == 0){
 				if($('#specialtyDropdown').html() == 'You must first select an industry before selecting an industry specialty.'){
 					$('#specialtyDropdown').html('');
 				}
 
-				this.allSpecialties.push({"NAICS_CODE": this.originalData.items[i].NAICS_CODE, "NAICS_DESCRIPTION": this.originalData.items[i].NAICS_DESC});
+				this.allSpecialties.push({"naics_code": this.originalData[i].naics_code, "naics_desc": this.originalData[i].naics_desc});
 			
-				$('#specialtyDropdown').append('<li role="presentation"><a role="menuitem" id="s' + this.originalData.items[i].NAICS_CODE + '" tabindex="-1" href="#">' + this.originalData.items[i].NAICS_DESC + '</a></li>');
+				$('#specialtyDropdown').append('<li role="presentation"><a role="menuitem" id="s' + this.originalData[i].naics_code + '" tabindex="-1" href="#">' + this.originalData[i].naics_desc + '</a></li>');
 
 				//we create an onclick callback on the id of the dropdown entry we just created
-				$('#s'+this.originalData.items[i].NAICS_CODE).click(function(e) {
-					//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the SHORT_CODE (which we generate from the HTML ID tag)
+				$('#s'+this.originalData[i].naics_code).click(function(e) {
+					//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the short_code (which we generate from the HTML ID tag)
 					self.addSpecialtyFilter(e.currentTarget.innerHTML, e.currentTarget.id.slice(1));
 				});	
 
 				flag = 1;
 			}
-			else if(this.allSpecialties[this.allSpecialties.length - 1].NAICS_CODE != this.originalData.items[i].NAICS_CODE){
-				this.allSpecialties.push({"NAICS_CODE": this.originalData.items[i].NAICS_CODE, "NAICS_DESCRIPTION": this.originalData.items[i].NAICS_DESC});
+			else if(this.allSpecialties[this.allSpecialties.length - 1].naics_code != this.originalData[i].naics_code){
+				this.allSpecialties.push({"naics_code": this.originalData[i].naics_code, "naics_desc": this.originalData[i].naics_desc});
 
-				$('#specialtyDropdown').append('<li role="presentation"><a role="menuitem" id="s' + this.originalData.items[i].NAICS_CODE + '" tabindex="-1" href="#">' + this.originalData.items[i].NAICS_DESC + '</a></li>');
+				$('#specialtyDropdown').append('<li role="presentation"><a role="menuitem" id="s' + this.originalData[i].naics_code + '" tabindex="-1" href="#">' + this.originalData[i].naics_desc + '</a></li>');
 
 				//we create an onclick callback on the id of the dropdown entry we just created
-				$('#s'+this.originalData.items[i].NAICS_CODE).click(function(e) {
-					//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the SHORT_CODE (which we generate from the HTML ID tag)
+				$('#s'+this.originalData[i].naics_code).click(function(e) {
+					//when an industry entry is clicked, we add the filter by calling addIndustryFilter with the argument of the short_code (which we generate from the HTML ID tag)
 					self.addSpecialtyFilter(e.currentTarget.innerHTML, e.currentTarget.id.slice(1));
 				});	
 
@@ -126,12 +126,12 @@ Panel.prototype.addSpecialtyFilter = function(text, id){
 	//make sure we're not throwing in a duplicate specialty value
 	for(var i = 0; i < this.enabledSpecialties.length; i++){
 		console.log(this.enabledSpecialties);
-		if(this.enabledSpecialties[i].NAICS_CODE == id){
+		if(this.enabledSpecialties[i].naics_code == id){
 			console.log("Attempting to create duplicate specialty filter. Aborting creation.");
 			return;
 		}
 	}
-	this.enabledSpecialties.push({"NAICS_CODE": id, "NAICS_DESC": text});
+	this.enabledSpecialties.push({"naics_code": id, "naics_desc": text});
 	this.addFilterGUI("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + text, id, "specialty");
 	this.updateAlterableData();
 }
@@ -201,9 +201,9 @@ Panel.prototype.removeIndustryFilter = function(SHORT_CODE_PARAM){
 	var c = 0;
 	var length = this.enabledSpecialties.length;
 	for(var i = 0; i < length; i++){
-		if(SHORT_CODE_PARAM == this.enabledSpecialties[c].NAICS_CODE.substring(0,2)){
-			$('#xs' + this.enabledSpecialties[c].NAICS_CODE).parent().remove();
-			$('#s' + this.enabledSpecialties[c].NAICS_CODE).parent().remove();
+		if(SHORT_CODE_PARAM == this.enabledSpecialties[c].naics_code.substring(0,2)){
+			$('#xs' + this.enabledSpecialties[c].naics_code).parent().remove();
+			$('#s' + this.enabledSpecialties[c].naics_code).parent().remove();
 			this.enabledSpecialties.splice(c, 1);
 		}
 		else{
@@ -219,7 +219,7 @@ Panel.prototype.removeIndustryFilter = function(SHORT_CODE_PARAM){
 	c = 0;
 	length = this.allSpecialties.length;
 	for(var i = 0; i < length; i++){
-		if(SHORT_CODE_PARAM == this.allSpecialties[c].NAICS_CODE.toString().substring(0,2)){
+		if(SHORT_CODE_PARAM == this.allSpecialties[c].naics_code.toString().substring(0,2)){
 			this.allSpecialties.splice(c, 1);
 		}
 		else{
@@ -232,7 +232,7 @@ Panel.prototype.removeIndustryFilter = function(SHORT_CODE_PARAM){
 
 Panel.prototype.removeSpecialtyFilter = function(NAICS_CODE_PARAM){
 	for(var i = 0; i < this.enabledSpecialties.length; i++){
-		if(this.enabledSpecialties[i].NAICS_CODE == NAICS_CODE_PARAM){
+		if(this.enabledSpecialties[i].naics_code == NAICS_CODE_PARAM){
 			//remove it from the array of enabled industries
 			this.enabledSpecialties.splice(i, 1);
 			//fix the map to incorporate these changes
@@ -241,10 +241,10 @@ Panel.prototype.removeSpecialtyFilter = function(NAICS_CODE_PARAM){
 	}
 }
 
-//we pass in the SHORT_CODE and we get back the object that it corresponds to
+//we pass in the short_code and we get back the object that it corresponds to
 Panel.prototype.getIndustryObjectBySHORT_CODE = function(SHORT_CODE_PARAM){
 	for(var i = 0; i < this.allIndustries.length; i++){
-		if(this.allIndustries[i].SHORT_CODE == SHORT_CODE_PARAM){
+		if(this.allIndustries[i].short_code == SHORT_CODE_PARAM){
 			return this.allIndustries[i];
 		}
 	}
@@ -281,15 +281,13 @@ Panel.prototype.updateAlterableData = function(){
 		$(".filterHeader").css("display", "none");
 	}
 
-	console.log(localEnabledSpecialties);
-
-	//start with a blank object, we have items in there to conform to how the object is set up in originalData just to maintain a common JSON schema
-	this.alterableData = {items:[]};
+	//start with a blank object
+	this.alterableData = [];
 
 	//loop through and find all of the entries for the given industries
 	for(var i = 0; i < localEnabledIndustries.length; i++){
-		for(var x = 0; x < this.originalData.items.length; x++){
-			if(this.originalData.items[x].SHORT_CODE == localEnabledIndustries[i].SHORT_CODE){
+		for(var x = 0; x < this.originalData.length; x++){
+			if(this.originalData[x].short_code == localEnabledIndustries[i].short_code){
 				//if we're this far into the loop we've found an entry for an industry that we were searching for
 
 				var flag = false;
@@ -297,25 +295,25 @@ Panel.prototype.updateAlterableData = function(){
 
 				//if no specialties are enabled, we can just push everything
 				if(localEnabledSpecialties.length == 0){
-					this.alterableData.items.push(this.originalData.items[x]);
+					this.alterableData.push(this.originalData[x]);
 				}
 				else{
 					//otherwise, we need to loop through our localEnabledSpecialties to see if the specialty of the given feature is in the list of specialties we should allow
 					for(var z = 0; z < localEnabledSpecialties.length; z++){
 						//this means that the NAICS Code is on the list of NAICS codes that we want to put on the map
-						if(this.originalData.items[x].NAICS_CODE == localEnabledSpecialties[z].NAICS_CODE){
-							this.alterableData.items.push(this.originalData.items[x]);
+						if(this.originalData[x].naics_code == localEnabledSpecialties[z].naics_code){
+							this.alterableData.push(this.originalData[x]);
 							added = true;
 							break;
 						}
 						//if we trip the flag, it means that the industry has a specialty filter on it which means that we can't add it to the map unless it fits in a specialization
-						if(this.originalData.items[x].SHORT_CODE == localEnabledSpecialties[z].NAICS_CODE.substring(0,2)){
+						if(this.originalData[x].short_code == localEnabledSpecialties[z].naics_code.substring(0,2)){
 							flag = true;
 						}
 					}
 					//we should add the entry if it's not in an industry with a specialization filter
 					if(!flag && !added){
-						this.alterableData.items.push(this.originalData.items[x]);
+						this.alterableData.push(this.originalData[x]);
 					}
 				}
 				
