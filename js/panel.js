@@ -58,6 +58,7 @@ Panel.prototype.initSearch = function(){
 					   								'<th>Name</th>'+
 					   								'<th>Industry</th>'+
 					   								'<th>Specialization</th>'+
+					   								'<th>Details</th>'+
 					   							'</tr>'+
 					   						'</thead>'+
 					   						'<tbody>';

@@ -2,7 +2,7 @@ function Map(){
 	this.data;
 
 	this.map = L.map('map', {maxZoom: 9, minZoom: 7, zoomControl: false}).setView([38.8, -77.9], 8);
-	L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+	L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.jpg', {
 	    attribution: "OpenStreetMap contributors"
 	}).addTo(this.map);
 
