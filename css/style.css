@@ -105,3 +105,7 @@ h5{
 .leaflet-popup-content, .leaflet-popup-scrolled{
 	overflow-x:hidden;
 }
+
+.modal{
+	z-index:999999999;
+}
