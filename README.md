@@ -1,0 +1,3 @@
+This project was created as a collaboration between the Maryland DoIT, Statestat, MDOT, and GOMA. It's a visualization of the locations of registered Minority Business Enterprises within the state of Maryland broken down by county, with additional filtering available. This site is intended as a discovery tool for people seeking out MBE's as well as a tool to help identify trends in the data.
+
+The major libraries are Leaflet and Bootstrap. The data is from Socrata, so any changes to the MBE dataset on Socrata will show up on this visualization ensuring that it stays up to date.
